@@ -15,13 +15,12 @@ class StopwatchViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var timer: CountDownTimer? = null
-    private var current = 0L
-    private var scope = CoroutineScope(
-        SupervisorJob() +
-                Dispatchers.Default
-    )
+    private var scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     fun bind(stopwatch: Stopwatch) {
+
+        binding.customViewTwo.setCurrent(stopwatch.value - stopwatch.currentMs)
+        binding.customViewTwo.setPeriod(stopwatch.value)
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
         if (stopwatch.isStarted) {
             startTimer(stopwatch)
@@ -29,10 +28,7 @@ class StopwatchViewHolder(
             stopTimer(stopwatch)
         }
         initButtonsListeners(stopwatch)
-
-
     }
-
 
     private fun startTimer(stopwatch: Stopwatch) {
 
@@ -42,7 +38,6 @@ class StopwatchViewHolder(
         timer?.start()
         binding.blinkingIndicator.isInvisible = false
         (binding.blinkingIndicator.background as? AnimationDrawable)?.start()
-
     }
 
     private fun stopTimer(stopwatch: Stopwatch) {
@@ -53,7 +48,6 @@ class StopwatchViewHolder(
         (binding.blinkingIndicator.background as? AnimationDrawable)?.stop()
     }
 
-
     private fun initButtonsListeners(stopwatch: Stopwatch) {
         binding.startPauseButton.setOnClickListener {
             if (stopwatch.isStarted) {
@@ -62,48 +56,45 @@ class StopwatchViewHolder(
                 listener.stopAnother(stopwatch.id)
                 listener.start(stopwatch.id, stopwatch.currentMs, stopwatch.value)
             }
+            binding.customViewTwo.setCurrent(0)
         }
 
-        binding.deleteButton.setOnClickListener { listener.delete(stopwatch.id) }
+        binding.deleteButton.setOnClickListener {
+            binding.customViewTwo.setCurrent(0)
+            listener.delete(stopwatch.id)
+        }
     }
-
-//    private fun startCustomView(stopwatch: Stopwatch) {
-//       scope.launch {
-//            binding.customViewTwo.setPeriod(stopwatch.value)
-//            while (stopwatch.isStarted) {
-//                current += INTERVAL
-//                binding.customViewTwo.setCurrent(current)
-//                delay(INTERVAL)
-//            }
-//        }
-//    }
 
     private fun getCountDownTimer(stopwatch: Stopwatch): CountDownTimer {
 
         return object : CountDownTimer(stopwatch.currentMs, UNIT_TEN_MS) {
-            val interval = UNIT_TEN_MS
 
             override fun onTick(millisUntilFinished: Long) {
-                stopwatch.currentMs -= interval
+                stopwatch.currentMs -= UNIT_TEN_MS
                 binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
-
+                scope.launch { binding.customViewTwo.setCurrent(stopwatch.value - stopwatch.currentMs) }
             }
 
-            @SuppressLint("ResourceAsColor")
+            @SuppressLint("ResourceAsColor", "ResourceType")
             override fun onFinish() {
-                binding.mainItem.setBackgroundColor(R.color.green_light)
+                binding.customViewTwo.setCurrent(0)
+                binding.mainItem.setBackgroundResource(R.color.green_light)
                 binding.blinkingIndicator.isInvisible = true
                 (binding.blinkingIndicator.background as? AnimationDrawable)?.stop()
+                binding.startPauseButton.text = "START"
+                binding.stopwatchTimer.text = stopwatch.value.displayTime()
+                binding.startPauseButton.setOnClickListener {
+                    binding.mainItem.setBackgroundResource(R.color.material_on_background_disabled)
+                    listener.start(stopwatch.id, stopwatch.value, stopwatch.value)
+                }
             }
         }
     }
 
-
-    private fun Long.displayTime(): String {
+    fun Long.displayTime(): String {
         val h = this / 1000 / 3600
         val m = this / 1000 % 3600 / 60
         val s = this / 1000 % 60
-
 
         return "${displaySlot(h)}:${displaySlot(m)}:${displaySlot(s)}"
     }
@@ -117,10 +108,6 @@ class StopwatchViewHolder(
     }
 
     private companion object {
-        private const val INTERVAL = 1000L
-
-
         private const val UNIT_TEN_MS = 1000L
-
     }
 }

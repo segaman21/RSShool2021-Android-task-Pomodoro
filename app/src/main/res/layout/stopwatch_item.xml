@@ -11,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainItem"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <ImageView
             android:id="@+id/blinking_indicator"
@@ -37,7 +38,7 @@
             android:id="@+id/custom_view_two"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:custom_color="@color/purple_700"
+            app:custom_color="@color/green"
             app:custom_style="fill"
             app:layout_constraintTop_toTopOf="@id/mainItem"
             app:layout_constraintBottom_toBottomOf="@id/mainItem"

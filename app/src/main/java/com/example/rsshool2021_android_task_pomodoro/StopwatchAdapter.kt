@@ -18,6 +18,7 @@ class StopwatchAdapter(private val listener: StopwatchListener) :
 
     override fun onBindViewHolder(holder: StopwatchViewHolder, position: Int) {
         holder.bind(getItem(position))
+
     }
 
     private companion object {

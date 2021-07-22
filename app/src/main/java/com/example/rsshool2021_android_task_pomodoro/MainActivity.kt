@@ -1,8 +1,11 @@
 package com.example.rsshool2021_android_task_pomodoro
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rsshool2021_android_task_pomodoro.databinding.ActivityMainBinding
 
@@ -33,8 +36,8 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
                     stopwatches.add(
                         Stopwatch(
                             nextId++,
-                            timerValue * 60000,
-                            timerValue * 60000L,
+                            timerValue * 3000,
+                            timerValue * 3000L,
                             false
                         )
                     )
@@ -74,6 +77,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
 
     override fun stop(id: Int, currentMs: Long, value: Long) {
         changeStopwatch(id, currentMs, value, false)
+
     }
 
     override fun delete(id: Int) {

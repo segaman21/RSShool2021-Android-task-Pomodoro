@@ -36,8 +36,8 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
                     stopwatches.add(
                         Stopwatch(
                             nextId++,
-                            timerValue * 3000,
-                            timerValue * 3000L,
+                            timerValue * 60000,
+                            timerValue * 60000L,
                             false
                         )
                     )

@@ -1,6 +1,7 @@
 package com.example.rsshool2021_android_task_pomodoro
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.os.CountDownTimer
 import androidx.annotation.RestrictTo
@@ -41,7 +42,6 @@ class StopwatchViewHolder(
     }
 
     private fun stopTimer(stopwatch: Stopwatch) {
-
         timer?.cancel()
         binding.startPauseButton.text = "START"
         binding.blinkingIndicator.isInvisible = true
@@ -77,15 +77,19 @@ class StopwatchViewHolder(
 
             @SuppressLint("ResourceAsColor", "ResourceType")
             override fun onFinish() {
-                binding.customViewTwo.setCurrent(0)
-                binding.mainItem.setBackgroundResource(R.color.green_light)
-                binding.blinkingIndicator.isInvisible = true
-                (binding.blinkingIndicator.background as? AnimationDrawable)?.stop()
-                binding.startPauseButton.text = "START"
-                binding.stopwatchTimer.text = stopwatch.value.displayTime()
+                binding.run {
+                    customViewTwo.setCurrent(0)
+                    mainItem.setBackgroundResource(R.color.green_light)
+                    blinkingIndicator.isInvisible = true
+                    startPauseButton.text = "START"
+                    stopwatchTimer.text = stopwatch.value.displayTime()
+                    (blinkingIndicator.background as? AnimationDrawable)?.stop()
+                }
+                stopwatch.isStarted = false
                 binding.startPauseButton.setOnClickListener {
-                    binding.mainItem.setBackgroundResource(R.color.material_on_background_disabled)
+                    binding.mainItem.setBackgroundResource(Color.TRANSPARENT)
                     listener.start(stopwatch.id, stopwatch.value, stopwatch.value)
+
                 }
             }
         }

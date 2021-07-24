@@ -22,7 +22,7 @@
         </activity>
 
         <service
-            android:name=".ForegroundService"
+            android:enabled="true" android:name=".ForegroundService"
             android:permission="android.permission.FOREGROUND_SERVICE" />
     </application>
 
